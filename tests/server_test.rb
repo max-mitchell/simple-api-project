@@ -1,5 +1,5 @@
 # tests/server_test.rb
-require_relative 'test_helper'
+require './tests/test_helper'
 
 class ServerTest < MiniTest::Unit::TestCase
     def test_hello

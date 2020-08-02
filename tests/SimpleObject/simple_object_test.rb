@@ -1,5 +1,5 @@
 # tests/SimpleObject/simple_object_test.rb
-require_relative '../test_helper'
+require './tests/test_helper'
 
 class SimpleObjectTest < MiniTest::Unit::TestCase
     def test_create

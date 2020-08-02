@@ -3,14 +3,8 @@
 # Provides ability to create, edit, fetch, and destroy
 # simple json objects
 
-# Require sinatra, as well as out object model
-require 'sinatra'
-require 'active_record'
-require_relative '../models/simple_object'
-
-# Set database config
-db_configuration = YAML.load(File.read('./db/config.yml'))
-ActiveRecord::Base.establish_connection(db_configuration["development"])
+# Require environment
+require './config/environment'
 
 before do
     if !request.body.read.blank?
@@ -72,7 +66,7 @@ put '/api/objects/:id' do
         empty_error
     else
         # Find object for given id
-        @simple_object = SimpleObject.where(id: params[:id])
+        @simple_object = SimpleObject.where(id: params[:id]).first
 
         # If the object can't be found, return an error
         if @simple_object.blank?
@@ -82,5 +76,19 @@ put '/api/objects/:id' do
             @simple_object.update(data: @json_data)
             send_json @simple_object
         end
+    end
+end
+
+# Edit route
+get '/api/objects/:id' do
+    # Find object for given id
+    @simple_object = SimpleObject.where(id: params[:id]).first
+
+    # If the object can't be found, return an error
+    if @simple_object.blank?
+        find_error
+    else
+        # Otherwise return
+        send_json @simple_object
     end
 end

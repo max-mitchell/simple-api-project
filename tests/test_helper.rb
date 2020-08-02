@@ -3,8 +3,7 @@
 
 require 'minitest/autorun'
 require 'database_cleaner/active_record'
-require_relative '../app/server'
-require_relative '../models/simple_object'
+require './config/environment'
 
 # Used to clean db between tests
 DatabaseCleaner.clean_with :truncation
