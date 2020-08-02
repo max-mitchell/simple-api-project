@@ -81,7 +81,9 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  minitest
   pg
+  rack-test
   sinatra
   standalone_migrations
 
