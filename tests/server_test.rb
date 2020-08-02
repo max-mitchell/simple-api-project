@@ -2,7 +2,7 @@
 require './tests/test_helper'
 require 'rack/test'
 require 'sinatra/base'
-require './app/server'
+require './app/simple_object_api'
 
 class ServerTest < MiniTest::Unit::TestCase
     include Rack::Test::Methods

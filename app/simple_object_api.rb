@@ -1,4 +1,4 @@
-# server.rb
+# app/simple_object_api.rb
 # Control for the api.
 # Provides ability to create, edit, fetch, and destroy
 # simple json objects
