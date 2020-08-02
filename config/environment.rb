@@ -1,5 +1,5 @@
 # Require sinatra, as well as out object model
-require'./models/simple_object'
+require'./app/models/simple_object'
 
 # Set database config
 db_configuration = YAML.load(File.read('./db/config.yml'))

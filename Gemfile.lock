@@ -45,9 +45,12 @@ GEM
       minitest (~> 5.0)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
+    nio4r (2.5.2)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
     pg (1.2.3)
+    puma (4.3.5)
+      nio4r (~> 2.0)
     rack (2.2.3)
     rack-protection (2.0.8.1)
       rack
@@ -91,6 +94,7 @@ DEPENDENCIES
   minitest
   minitest-around
   pg
+  puma
   rack-test
   sinatra
   standalone_migrations

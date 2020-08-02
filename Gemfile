@@ -5,6 +5,7 @@ gem 'sinatra'
 gem 'activerecord'
 gem 'standalone_migrations'
 gem 'pg'
+gem 'puma'
 
 # For testing
 group :test do
