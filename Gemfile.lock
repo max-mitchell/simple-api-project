@@ -28,6 +28,10 @@ GEM
     builder (3.2.4)
     concurrent-ruby (1.1.6)
     crass (1.0.6)
+    database_cleaner (1.8.5)
+    database_cleaner-active_record (1.8.0)
+      activerecord
+      database_cleaner (~> 1.8.0)
     erubi (1.9.0)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
@@ -37,6 +41,8 @@ GEM
     method_source (1.0.0)
     mini_portile2 (2.4.0)
     minitest (5.14.1)
+    minitest-around (0.5.0)
+      minitest (~> 5.0)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     nokogiri (1.10.10)
@@ -81,7 +87,9 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  database_cleaner-active_record
   minitest
+  minitest-around
   pg
   rack-test
   sinatra

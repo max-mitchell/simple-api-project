@@ -7,5 +7,9 @@ gem 'standalone_migrations'
 gem 'pg'
 
 # For testing
-gem 'minitest'
-gem 'rack-test'
+group :test do
+    gem 'minitest'
+    gem 'minitest-around'
+    gem 'rack-test'
+    gem 'database_cleaner-active_record'
+end

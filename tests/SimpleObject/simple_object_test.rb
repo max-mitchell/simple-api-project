@@ -2,29 +2,33 @@
 require_relative '../test_helper'
 
 class SimpleObjectTest < MiniTest::Unit::TestCase
-
-    def setup
-        @json_requests = [
-            {
-                firstName: "Max",
-                lastName: "Mitchell",
-                dob: "25 June 1903"
-            },
-            {
-                firstName: "Jane",
-                lastName: "Fonda",
-                dob: "7 April 1848"
-            },
-            {
-                firstName: "Mr",
-                lastName: "Man",
-                dob: "1 March 205"
-            }
-        ]
+    def test_create
+        object = SimpleObject.create(data: {"hello": "world"})
+        assert_equal object.data["hello"], "world"
+        assert_equal 1, SimpleObject.count
     end
 
-    def test_create
-        simple_object = SimpleObject.create(data: @json_requests[0])
-        assert_equal JSON.parse(@json_requests[0]), simple_object.data
+    def test_delete
+        object = SimpleObject.create()
+        assert_equal 1, SimpleObject.count
+        uid = object.id
+        SimpleObject.where(id: uid).destroy_all
+        assert_equal 0, SimpleObject.count
+    end
+
+    def test_edit
+        object = SimpleObject.create(data: {"hello": "world"})
+        assert_equal object.data["hello"], "world"
+        object.update(data: {"hello": "goodbye"})
+        assert_equal object.data["hello"], "goodbye"
+        assert_equal 1, SimpleObject.count
+    end
+
+    def test_get
+        object = SimpleObject.create(data: {"hello": "world"})
+        id = object.id
+        data = object.data
+        object2 = SimpleObject.where(id: id).first
+        assert_equal data["hello"], object2.data["hello"]
     end
 end

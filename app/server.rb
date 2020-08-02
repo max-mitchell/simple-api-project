@@ -9,15 +9,12 @@ require 'active_record'
 require_relative '../models/simple_object'
 
 # Set database config
-def db_configuration
-    db_configuration_file = File.join(File.expand_path('..', __FILE__), '..', 'db', 'config.yml')
-    YAML.load(File.read(db_configuration_file))
-end
+db_configuration = YAML.load(File.read('./db/config.yml'))
 ActiveRecord::Base.establish_connection(db_configuration["development"])
 
 before do
-    request.body.rewind
     if !request.body.read.blank?
+        request.body.rewind
         @json_data = JSON.parse(request.body.read)
     else
         @json_data = false
@@ -34,17 +31,27 @@ helpers do
         end
     end
 
-    # Simple error message
-    def error_message
+    # Error messages
+    def empty_error
         status 200
-        send_json :error => "no data"
+        send_json :error => "Received no data"
+    end
+
+    def save_error
+        status 200
+        send_json :error => "Failed to save json data"
+    end
+
+    def find_error
+        status 200
+        send_json :error => "No object exists for that uid"
     end
 end
 
 # Create route
-get '/api/objects' do
+post '/api/objects' do
     if !@json_data
-        error_message
+        empty_error
     else
         # Read json data from request and make a new simple_object
         @simple_object = SimpleObject.create(data: @json_data)
@@ -54,7 +61,26 @@ get '/api/objects' do
             send_json @simple_object
         else
             # Otherwise, return an error
-            error_message
+            save_error
+        end
+    end
+end
+
+# Edit route
+put '/api/objects/:id' do
+    if !@json_data
+        empty_error
+    else
+        # Find object for given id
+        @simple_object = SimpleObject.where(id: params[:id])
+
+        # If the object can't be found, return an error
+        if @simple_object.blank?
+            find_error
+        else
+            # Otherwise, update and return
+            @simple_object.update(data: @json_data)
+            send_json @simple_object
         end
     end
 end

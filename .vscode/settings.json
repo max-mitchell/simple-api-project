@@ -2,5 +2,9 @@
     "cSpell.words": [
         "postgres",
         "postgresql"
+    ],
+    "cSpell.enableFiletypes": [
+        "gemfile",
+        "ruby"
     ]
 }
