@@ -3,11 +3,6 @@
 # Provides ability to create, edit, fetch, and destroy
 # simple json objects
 
-# Require environment
-require './config/environment'
-require 'sinatra'
-require 'active_record'
-
 class SimpleObjectApi < Sinatra::Base
     before do
         if !request.body.read.blank?
