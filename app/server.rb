@@ -5,10 +5,48 @@
 
 # Require sinatra, as well as out object model
 require 'sinatra'
-require 'sinatra/activerecord'
-require 'sinatra/json'
-require '.SimpleObject'
+require 'active_record'
+require_relative '../models/simple_object'
 
 # Set database config
-set :database, {adapter: 'postgresql', database: 'development'}
-mime_type :json, 'application/json'
+def db_configuration
+    db_configuration_file = File.join(File.expand_path('..', __FILE__), '..', 'db', 'config.yml')
+    YAML.load(File.read(db_configuration_file))
+end
+ActiveRecord::Base.establish_connection(db_configuration["development"])
+
+before do
+    request.body.rewind
+    @json_data = JSON.parse(request.body.read)
+end
+
+helpers do
+    # Send an array as json data
+    def send_json(data)
+        if data.empty?
+            return error_message
+        else
+            JSON.pretty_generate(JSON.load(data.to_json))
+        end
+    end
+
+    # Simple error message
+    def error_message
+        status 200
+        send_json :message => "no data"
+    end
+end
+
+# Create route
+get '/api/objects' do
+    # Read json data from request and make a new simple_object
+    @simple_object = SimpleObject.create(data: @json_data)
+
+    # If the object saves, return the object
+    if @simple_object.save
+        send_json @simple_object
+    else
+        # Otherwise, return an error
+        error_message
+    end
+end
