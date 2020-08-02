@@ -1,27 +1,24 @@
 # Configuration for our postgresql database
 
-development:
+default: &default
   adapter: postgresql
   encoding: unicode
+  username: simple_api
+  password: veryGoodPassword
+  pool: 5
+
+development:
+  <<: *default
   database: simple_api_development
   host: localhost
-  username: simple_api
-  password: veryGoodPassword
 
 test:
-  adapter: postgresql
-  encoding: unicode
+  <<: *default
   database: simple_api_test
-  pool: 5
   host: localhost
-  username: simple_api
-  password: veryGoodPassword
 
 production:
-  adapter: postgresql
-  encoding: unicode
+  <<: *default
   database: simple_api_production
-  pool: 5
-  username: simple_api
   password: <%= ENV['DATABASE_PASSWORD'] %>
   url: <%= ENV['DATABASE_URL'] %>
