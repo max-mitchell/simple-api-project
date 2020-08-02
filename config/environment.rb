@@ -5,4 +5,5 @@ require'./models/simple_object'
 
 # Set database config
 db_configuration = YAML.load(File.read('./db/config.yml'))
-ActiveRecord::Base.establish_connection(db_configuration["development"])
+environment = ENV.fetch('RACK_ENV') { 'development' }
+ActiveRecord::Base.establish_connection(db_configuration[environment])

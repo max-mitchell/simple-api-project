@@ -5,6 +5,9 @@ require 'minitest/autorun'
 require 'database_cleaner/active_record'
 require './config/environment'
 
+# Set test env
+ENV['RACK_ENV'] = 'test'
+
 # Used to clean db between tests
 DatabaseCleaner.clean_with :truncation
 DatabaseCleaner.strategy = :transaction
