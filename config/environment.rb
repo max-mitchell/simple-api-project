@@ -1,6 +1,4 @@
 # Require sinatra, as well as out object model
-require 'sinatra'
-require 'active_record'
 require'./models/simple_object'
 
 # Set database config
