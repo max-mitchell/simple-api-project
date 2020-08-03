@@ -1,7 +1,15 @@
 # tests/SimpleObject/simple_object_test.rb
 require './tests/test_helper'
 
-class SimpleObjectTest < MiniTest::Unit::TestCase
+class SimpleObjectTest < MiniTest::Test
+    def setup
+        DatabaseCleaner.start
+    end
+
+    def teardown
+        DatabaseCleaner.clean
+    end
+
     def test_create
         object = SimpleObject.create(data: {"hello": "world"})
         assert_equal object.data["hello"], "world"

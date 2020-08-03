@@ -1,23 +1,43 @@
 # tests/server_test.rb
 require './tests/test_helper'
-require 'rack/test'
-require 'sinatra/base'
-require './app/simple_object_api'
 
-class ServerTest < MiniTest::Unit::TestCase
-    include Rack::Test::Methods
+include Rack::Test::Methods
 
-    def app
-        SimpleObjectApi
+def app
+    SimpleObjectApi
+end
+
+describe SimpleObjectApi do
+
+    describe "When fetching an existing object" do
+        DatabaseCleaner.start
+        body = {
+            'fname' => "Joe",
+            'lname' => "Smith",
+            'dob' => "24 April 2020"
+        }
+        sObj = SimpleObject.create(data: body.to_json)
+
+        resp = get '/api/object/' + sObj.id
+        puts resp.inspect
+        it "must respond with 200" do
+            assert last_response.ok?
+        end
+        DatabaseCleaner.clean
     end
 
-    def test_create
+    describe "When creating a new object" do
+        DatabaseCleaner.start
         body = {
             'fname' => "Joe",
             'lname' => "Smith",
             'dob' => "24 April 2020"
         }
         post '/api/object', body.to_json, "CONTENT_TYPE" => "application/json"
-        assert last_response.ok?
+        it "must respond with 200" do
+            assert last_response.ok?
+        end
+        DatabaseCleaner.clean
     end
+
 end
