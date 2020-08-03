@@ -44,12 +44,11 @@ class SimpleObjectApi < Sinatra::Base
     # Create route
     post '/api/objects' do
         # Read json data from request and make a new simple_object
-        @simple_object = SimpleObject.create(data: json_params)
+        simple_object = SimpleObject.create(data: json_params)
 
         # If the object saves, return the object
-        if @simple_object.save
-            # Send back data
-            send_simple_object @simple_object
+        if simple_object.save
+            send_simple_object simple_object
         else
             # Otherwise, return an error
             send_error request, url, "Could not save new object."
@@ -59,32 +58,26 @@ class SimpleObjectApi < Sinatra::Base
     # Edit route
     put '/api/objects/:id' do
         # Find object for given id
-        @simple_object = SimpleObject.where(id: params[:id]).first
+        simple_object = SimpleObject.where(id: params[:id]).first
 
         # If the object can't be found, return an error
-        if @simple_object.blank?
-            send_error request, url, "Could not find requested uid."
-        else
-            # Otherwise, update and return
-            @simple_object.update(data: json_params)
+        halt(send_error(request, url, "Could not find requested uid.")) unless simple_object
+        # Otherwise, update and return
+        simple_object.update(data: json_params)
 
-            # Send back data
-            send_simple_object @simple_object
-        end
+        # Send back data
+        send_simple_object simple_object
     end
 
     # Fetch route
     get '/api/objects/:id' do
         # Find object for given id
-        @simple_object = SimpleObject.where(id: params[:id]).first
+        simple_object = SimpleObject.where(id: params[:id]).first
 
         # If the object can't be found, return an error
-        if @simple_object.blank?
-            send_error request, url, "Could not find requested uid."
-        else
-            # Send back data
-            send_simple_object @simple_object
-        end
+        halt(send_error(request, url, "Could not find requested uid.")) unless simple_object
+        # Send back data
+        send_simple_object simple_object
     end
 
     # Fetch all route
@@ -104,12 +97,10 @@ class SimpleObjectApi < Sinatra::Base
     # Delete route
     delete '/api/objects/:id' do
         # Find object for given id
-        @simple_object = SimpleObject.where(id: params[:id]).first
+        simple_object = SimpleObject.where(id: params[:id]).first
 
         # If the object is real, delete it
-        if !@simple_object.blank?
-            @simple_object.destroy
-        end
-            status 200
+        simple_object.destroy if simple_object
+        status 200
     end
 end
