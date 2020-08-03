@@ -4,6 +4,13 @@
 # simple json objects
 
 class SimpleObjectApi < Sinatra::Base
+    # Constants for error messages
+    JSON_DATA_ERROR = "Bad JSON data."
+    MISSING_UID_ERROR = "Could not find requested uid."
+    SAVE_ERROR = "Could not save new object."
+    EMPTY_DB_ERROR = "No objects to fetch."
+    SERVER_ERROR = "Server error."
+
 
     # Helper methods for the various api routes
     helpers do
@@ -12,14 +19,14 @@ class SimpleObjectApi < Sinatra::Base
             begin
                 JSON.parse(request.body.read)
             rescue
-                halt(send_error(request, url, "Bad JSON data."))
+                halt(send_error(request, url, JSON_DATA_ERROR))
             end
         end
 
         # Send an array as json data
         def send_json(data)
             if data.blank?
-                send_error "", "", "Server error."
+                send_error "", "", SERVER_ERROR
             else
                 JSON.pretty_generate(JSON.load(data.to_json))
             end
@@ -51,7 +58,7 @@ class SimpleObjectApi < Sinatra::Base
             send_simple_object simple_object
         else
             # Otherwise, return an error
-            send_error request, url, "Could not save new object."
+            send_error request, url, SAVE_ERROR
         end
     end
 
@@ -61,7 +68,7 @@ class SimpleObjectApi < Sinatra::Base
         simple_object = SimpleObject.where(id: params[:id]).first
 
         # If the object can't be found, return an error
-        halt(send_error(request, url, "Could not find requested uid.")) unless simple_object
+        halt(send_error(request, url, MISSING_UID_ERROR)) unless simple_object
         # Otherwise, update and return
         simple_object.update(data: json_params)
 
@@ -75,7 +82,7 @@ class SimpleObjectApi < Sinatra::Base
         simple_object = SimpleObject.where(id: params[:id]).first
 
         # If the object can't be found, return an error
-        halt(send_error(request, url, "Could not find requested uid.")) unless simple_object
+        halt(send_error(request, url, MISSING_UID_ERROR)) unless simple_object
         # Send back data
         send_simple_object simple_object
     end
@@ -89,7 +96,7 @@ class SimpleObjectApi < Sinatra::Base
         end
 
         # If the list is empty, return an error
-        halt(send_error(request, url, "No objects to fetch.")) unless !all_objects.empty?
+        halt(send_error(request, url, EMPTY_DB_ERROR)) unless !all_objects.empty?
         # Otherwise, return the objects urls
         send_json all_objects
     end
