@@ -1,0 +1,1 @@
+web: bundle exec rackup -p ${PORT:-4567} -E ${RACK_ENV:-development} config.ru
