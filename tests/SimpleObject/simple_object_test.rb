@@ -16,6 +16,15 @@ class SimpleObjectTest < MiniTest::Test
         DatabaseCleaner.clean
     end
 
+    # Small function to parse response bodies
+    def parse_json(data)
+        begin
+            JSON.parse(data)
+        rescue
+            false
+        end
+    end
+
     # Tests basic DB operations
     def test_db
         object = SimpleObject.new(data: {"hello": "world"})
@@ -30,9 +39,21 @@ class SimpleObjectTest < MiniTest::Test
 
     # Test the send_json method
     def test_send_json
-        data = {
-            "hello" => "world"
-        }
+        data = { "hello" => "world" }
         assert_equal JSON.pretty_generate(JSON.load(data.to_json)), @app.helpers.send_json(data)
+
+        error = @app.helpers.send_json("")
+        assert_equal error, SimpleObjectApi::SERVER_ERROR
+    end
+
+    # Test the send simple object method
+    def test_send_simple_object
+        object = SimpleObject.create(data: {"hello": "world"})
+        data = @app.helpers.send_simple_object(object)
+        assert data
+
+        parsed = parse_json data
+        assert_equal object.id, parsed["uid"]
+        assert_equal object.data, parsed["json-data"]
     end
 end
