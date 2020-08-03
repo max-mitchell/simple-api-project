@@ -10,7 +10,8 @@ require './app/simple_object_api'
 
 # Set test env
 ENV['RACK_ENV'] = 'test'
+ENV['RAILS_ENV'] = 'test'
 
 # Used to clean db between tests
-DatabaseCleaner.clean_with :truncation
+DatabaseCleaner.clean_with :deletion
 DatabaseCleaner.strategy = :transaction
