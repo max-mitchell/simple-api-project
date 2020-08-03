@@ -89,15 +89,18 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord
-  database_cleaner-active_record
-  minitest
-  minitest-around
-  pg
-  puma
-  rack-test
-  sinatra
-  standalone_migrations
+  activerecord (~> 6.0.3)
+  database_cleaner-active_record (~> 1.8.0)
+  minitest (~> 5.14.1)
+  minitest-around (~> 0.5.0)
+  pg (~> 1.2.3)
+  puma (~> 4.3.5)
+  rack-test (~> 1.1.0)
+  sinatra (~> 2.0.8)
+  standalone_migrations (~> 6.0.0)
+
+RUBY VERSION
+   ruby 2.7.0p0
 
 BUNDLED WITH
    2.1.2
