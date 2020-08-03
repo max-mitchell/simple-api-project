@@ -9,7 +9,7 @@ db_env = db_configuration[environment]
 # If production, include the url here so we
 # don't have to mess with erb
 if environment == "production"
-    db_env[:url] = ENV['DATABASE_URL']
+    db_env = ENV['DATABASE_URL']
 end
 
 ActiveRecord::Base.establish_connection(db_env)

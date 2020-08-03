@@ -18,7 +18,3 @@ test:
   username: simple_api
   password: veryGoodPassword
   host: localhost
-
-production:
-  <<: *default
-  database: simple_api_production
