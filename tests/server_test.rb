@@ -48,7 +48,7 @@ def test_error(resp, verb, url, msg)
     it "must have valid error details" do
         assert_equal verb, data["verb"]
         assert data["url"].include? url
-        assert_equal msg, data["error"]
+        assert_equal msg, data["message"]
     end 
 end
 

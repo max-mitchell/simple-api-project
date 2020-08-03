@@ -39,6 +39,6 @@ module ApplicationHelpers
     # Error messages
     def send_error(req, url, msg)
         status 400
-        send_json :verb => req.request_method, :url => url, :error => msg
+        send_json :verb => req.request_method, :url => url, :message => msg
     end
 end
