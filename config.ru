@@ -10,8 +10,5 @@ require 'puma'
 require './helpers/application_helpers'
 require './app/simple_object_api'
 
-# Use ConnectionManagement to ensure connections are closed eventually
-# use ActiveRecord::ConnectionAdapters::ConnectionManagement
-
 # Run the api
 run SimpleObjectApi
