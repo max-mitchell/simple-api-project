@@ -286,7 +286,7 @@ describe SimpleObjectApi do
         end
         
         it "must have an empty body" do
-            assert first_resp.body.blank?
+            assert !first_resp.body.present?
         end
 
         # Delete the object again
@@ -298,7 +298,7 @@ describe SimpleObjectApi do
         end
         
         it "must have an empty body" do
-            assert second_resp.body.blank?
+            assert !second_resp.body.present?
         end
 
         DatabaseCleaner.clean

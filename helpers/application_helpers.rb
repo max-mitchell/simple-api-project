@@ -20,8 +20,8 @@ module ApplicationHelpers
 
     # Send an array as json data
     def send_json(data)
-        if data.blank?
-            send_error "", "", SERVER_ERROR
+        if !data.present?
+            SERVER_ERROR
         else
             JSON.pretty_generate(JSON.load(data.to_json))
         end
