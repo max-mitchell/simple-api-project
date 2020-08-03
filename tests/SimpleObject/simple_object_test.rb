@@ -1,49 +1,38 @@
 # tests/SimpleObject/simple_object_test.rb
+#
+# Unit tests for the SimpleObject model, as
+# well as for various class methods
+
 require './tests/test_helper'
 
 class SimpleObjectTest < MiniTest::Test
+    # Make sure to clean the DB after every run
     def setup
         DatabaseCleaner.start
+        @app = SimpleObjectApi.new
     end
 
     def teardown
         DatabaseCleaner.clean
     end
 
-    def test_create
+    # Tests basic DB operations
+    def test_db
         object = SimpleObject.new(data: {"hello": "world"})
+
         assert_equal object.data["hello"], "world"
         assert object.save
         assert_equal 1, SimpleObject.count
-    end
 
-    def test_empty_create
-        object = SimpleObject.new
-        assert object.save
-        assert_equal 1, SimpleObject.count
-    end
-
-    def test_delete
-        object = SimpleObject.create()
-        assert_equal 1, SimpleObject.count
-        uid = object.id
-        SimpleObject.where(id: uid).first.destroy
+        object.destroy
         assert_equal 0, SimpleObject.count
     end
 
-    def test_edit
-        object = SimpleObject.create(data: {"hello": "world"})
-        assert_equal object.data["hello"], "world"
-        object.update(data: {"hello": "goodbye"})
-        assert_equal object.data["hello"], "goodbye"
-        assert_equal 1, SimpleObject.count
-    end
-
-    def test_get
-        object = SimpleObject.create(data: {"hello": "world"})
-        id = object.id
-        data = object.data
-        object2 = SimpleObject.where(id: id).first
-        assert_equal data["hello"], object2.data["hello"]
+    # Test the send_json method
+    def test_send_json
+        data = {
+            "hello" => "world"
+        }
+        assert_equal JSON.pretty_generate(JSON.load(data.to_json)), @app.helpers.send_json(data)
     end
 end
