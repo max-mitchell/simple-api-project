@@ -21,4 +21,4 @@ production:
   <<: *default
   database: simple_api_production
   password: <%= ENV['DATABASE_PASSWORD'] %>
-  url: <%= ENV['DATABASE_URL'] %>
+  url: <%= URI.parse(ENV['DATABASE_URL']) %>
