@@ -11,8 +11,15 @@ class SimpleObjectTest < MiniTest::Test
     end
 
     def test_create
-        object = SimpleObject.create(data: {"hello": "world"})
+        object = SimpleObject.new(data: {"hello": "world"})
         assert_equal object.data["hello"], "world"
+        assert object.save
+        assert_equal 1, SimpleObject.count
+    end
+
+    def test_empty_create
+        object = SimpleObject.new
+        assert object.save
         assert_equal 1, SimpleObject.count
     end
 
@@ -20,7 +27,7 @@ class SimpleObjectTest < MiniTest::Test
         object = SimpleObject.create()
         assert_equal 1, SimpleObject.count
         uid = object.id
-        SimpleObject.where(id: uid).destroy_all
+        SimpleObject.where(id: uid).first.destroy
         assert_equal 0, SimpleObject.count
     end
 
