@@ -3,22 +3,23 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  username: simple_api
-  password: veryGoodPassword
   pool: 5
 
 development:
   <<: *default
   database: simple_api_development
+  username: simple_api
+  password: veryGoodPassword
   host: localhost
 
 test:
   <<: *default
   database: simple_api_test
+  username: simple_api
+  password: veryGoodPassword
   host: localhost
 
 production:
   <<: *default
   database: simple_api_production
-  password: <%= ENV['DATABASE_PASSWORD'] %>
-  url: <%= URI.parse(ENV['DATABASE_URL']) %>
+  url: <%= ENV['DATABASE_URL'] %>
