@@ -1,4 +1,4 @@
-# Require sinatra, as well as out object model
+# Require sinatra, as well as our object model
 require'./app/models/simple_object'
 
 # Set database config

@@ -21,6 +21,7 @@ module ApplicationHelpers
     # Send an array as json data
     def send_json(data)
         if !data.present?
+            # Just in case something goes wrong
             SERVER_ERROR
         else
             JSON.pretty_generate(JSON.load(data.to_json))
@@ -36,7 +37,7 @@ module ApplicationHelpers
         send_json data
     end
 
-    # Error messages
+    # For sending error messages
     def send_error(req, url, msg)
         status 400
         send_json :verb => req.request_method, :url => url, :message => msg

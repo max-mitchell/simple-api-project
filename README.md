@@ -15,4 +15,4 @@ To set up locally
     ```
     Then, again back in your own account and in the new project folder, run `bundle exec rake db:migrate`. Re run that command with `RACK_ENV=test` at the front to generate the test DB.
 * Tests are run with `bundle exec rake test`.
-* Start the server with `rackup -p [PORT] -s puma`, where PORT is any port of your choice, and you are ready to go.
+* Start the server with `rackup -p [PORT] -s puma`, where PORT is any port of your choice.

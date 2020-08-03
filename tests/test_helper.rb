@@ -4,6 +4,7 @@
 # Set test env
 ENV['RACK_ENV'] = 'test'
 
+# Require all project files needed
 require 'minitest/autorun'
 require 'database_cleaner/active_record'
 require 'rack/test'

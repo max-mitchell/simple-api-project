@@ -5,8 +5,8 @@ require 'rake/testtask'
 
 StandaloneMigrations::Tasks.load_tasks
 Rake::TestTask.new do |t|
-    t.pattern = "tests/**/*_test.rb"
-  end
+  t.pattern = "tests/**/*_test.rb"
+end
   
-  task default: :test
+task default: :test
   
