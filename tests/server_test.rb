@@ -55,6 +55,42 @@ describe SimpleObjectApi do
         DatabaseCleaner.clean
     end
 
+    describe "When fetching all existing objects" do
+        DatabaseCleaner.start
+
+        50.times { SimpleObject.create().id }
+
+        resp = get '/api/objects'
+
+        object_ids = []
+        SimpleObject.all.each do |obj|
+            object_ids << obj.id
+        end
+
+        it "must respond with 200" do
+            assert resp.ok?
+        end
+        
+        it "must have a valid json body" do
+            assert resp.body
+        end
+
+        json_data = parse_json resp.body
+
+        it "must respond with the correct number of uids" do
+            assert_equal json_data.length(), object_ids.length()
+        end
+
+
+        it "must respond with the correct uids" do
+            object_ids.each_with_index do |uid, index|
+                assert json_data[index]["url"].include? uid
+            end
+        end
+
+        DatabaseCleaner.clean
+    end
+
     describe "When creating a new object" do
         DatabaseCleaner.start
         body = {
@@ -62,25 +98,31 @@ describe SimpleObjectApi do
             'lname' => "Smith",
             'dob' => "24 April 2020"
         }
-        resp = post '/api/objects', body.to_json
+        first_resp = post '/api/objects', body.to_json
 
         it "must respond with 200" do
-            assert resp.ok?
+            assert first_resp.ok?
         end
         
-        json_data = parse_json resp.body
-        puts json_data
+        first_json_data = parse_json first_resp.body
 
         it "must have a valid json body" do
-            assert json_data
+            assert first_json_data
         end
 
         it "must respond with a new uid" do
-            assert json_data["uid"]
+            assert first_json_data["uid"]
         end
 
         it "must respond with matching json data" do
-            assert_equal body.to_json, json_data["json-data"]
+            assert_equal body, first_json_data["json-data"]
+        end
+
+        second_resp = post '/api/objects', body.to_json
+        second_json_data = parse_json second_resp.body
+
+        it "must respond with a different uid for a new object with the same data" do
+            assert second_json_data["uid"] != first_json_data["uid"]
         end
         DatabaseCleaner.clean
     end
