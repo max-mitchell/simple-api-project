@@ -4,20 +4,22 @@
 # simple json objects
 
 class SimpleObjectApi < Sinatra::Base
-    before do
-        if !request.body.read.blank?
-            request.body.rewind
-            @json_data = JSON.parse(request.body.read)
-        else
-            @json_data = false
-        end
-    end
 
+    # Helper methods for the various api routes
     helpers do
+        # Parse incoming json data
+        def json_params
+            begin
+                JSON.parse(request.body.read)
+            rescue
+                halt(send_error(request, url, "Bad JSON data."))
+            end
+        end
+
         # Send an array as json data
         def send_json(data)
             if data.blank?
-                status 500
+                send_error "", "", "Server error."
             else
                 JSON.pretty_generate(JSON.load(data.to_json))
             end
@@ -25,7 +27,11 @@ class SimpleObjectApi < Sinatra::Base
 
         # Format SimpleObject, then send
         def send_simple_object(obj)
-            send_json ["uid" => obj.id, "json-data" => obj.data]
+            data = {
+                "uid": obj.id,
+                "json-data": obj.data
+            }
+            send_json data
         end
 
         # Error messages
@@ -37,41 +43,33 @@ class SimpleObjectApi < Sinatra::Base
 
     # Create route
     post '/api/objects' do
-        if !@json_data
-            send_error request, url, "No data provided."
-        else
-            # Read json data from request and make a new simple_object
-            @simple_object = SimpleObject.create(data: @json_data)
+        # Read json data from request and make a new simple_object
+        @simple_object = SimpleObject.create(data: json_params)
 
-            # If the object saves, return the object
-            if @simple_object.save
-                # Send back data
-                send_simple_object @simple_object
-            else
-                # Otherwise, return an error
-                send_error request, url, "Could not save new object."
-            end
+        # If the object saves, return the object
+        if @simple_object.save
+            # Send back data
+            send_simple_object @simple_object
+        else
+            # Otherwise, return an error
+            send_error request, url, "Could not save new object."
         end
     end
 
     # Edit route
     put '/api/objects/:id' do
-        if !@json_data
-            send_error request, url, "No data provided."
+        # Find object for given id
+        @simple_object = SimpleObject.where(id: params[:id]).first
+
+        # If the object can't be found, return an error
+        if @simple_object.blank?
+            send_error request, url, "Could not find requested uid."
         else
-            # Find object for given id
-            @simple_object = SimpleObject.where(id: params[:id]).first
+            # Otherwise, update and return
+            @simple_object.update(data: json_params)
 
-            # If the object can't be found, return an error
-            if @simple_object.blank?
-                send_error request, url, "Could not find requested uid."
-            else
-                # Otherwise, update and return
-                @simple_object.update(data: @json_data)
-
-                # Send back data
-                send_simple_object @simple_object
-            end
+            # Send back data
+            send_simple_object @simple_object
         end
     end
 
@@ -97,7 +95,9 @@ class SimpleObjectApi < Sinatra::Base
             all_objects << {:url => "#{url}/#{obj.id}"}
         end
 
-        # Return list of urls
+        # If the list is empty, return an error
+        halt(send_error(request, url, "No objects to fetch.")) unless !all_objects.empty?
+        # Otherwise, return the objects urls
         send_json all_objects
     end
 
