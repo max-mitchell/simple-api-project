@@ -6,7 +6,8 @@ require 'sinatra'
 require 'active_record'
 require 'puma'
 
-# Require api class
+# Require api class and helpers
+require './helpers/application_helpers'
 require './app/simple_object_api'
 
 # Use ConnectionManagement to ensure connections are closed eventually
