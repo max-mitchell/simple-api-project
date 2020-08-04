@@ -1,6 +1,12 @@
 # Simple RESTful API
 
-A simple api powered by sinatra and rack. Lives on Heroku [here](https://shrouded-sierra-29495.herokuapp.com/)
+A simple api to manipulate JSON objects. Powered by sinatra and rack. Lives on Heroku [here](https://shrouded-sierra-29495.herokuapp.com/)
+
+- Create: POST /api/objects
+- Edit: PUT /api/objects/:uid
+- Fetch: GET /api/objects/:uid
+- Fetch all: GET /api/objetcs
+- Remove: DELETE /api/objects/:uid
 
 To set up locally
 * Install [ruby](https://www.ruby-lang.org/en/documentation/installation/) v2.7.0 and [postgresql](https://www.postgresql.org/download/).
