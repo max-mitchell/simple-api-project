@@ -6,19 +6,6 @@
 class SimpleObjectApi < Sinatra::Base
     helpers ApplicationHelpers
 
-    # Returns urls to all objects
-    def return_all(req, source_url)
-        all_objects = []
-        SimpleObject.all.each do |obj|
-            all_objects << {:url => "#{source_url}/#{obj.id}"}
-        end
-
-        # If the list is empty, return an error
-        halt(send_error(req, source_url, EMPTY_DB_ERROR)) unless !all_objects.empty?
-        # Otherwise, return the objects urls
-        return all_objects
-    end
-
     # Create route
     post '/api/objects' do
         # Read json data from request and make a new simple_object
@@ -49,8 +36,6 @@ class SimpleObjectApi < Sinatra::Base
 
     # Fetch route
     get '/api/objects/:id' do
-        # If the id is empty, assume the user wants all objects
-        return send_json return_all(request, url) unless params[:id]
         # Find object for given id
         simple_object = SimpleObject.where(id: params[:id]).first
 
@@ -61,9 +46,14 @@ class SimpleObjectApi < Sinatra::Base
     end
 
     # Fetch all route
-    get '/api/objects' do
-        # Get all objects
-        send_json return_all(request, url)
+    get %r{/api/objects/?} do
+        all_objects = []
+        SimpleObject.all.each do |obj|
+            all_objects << {:url => "#{url}/#{obj.id}"}
+        end
+
+        # Return the objects urls
+        send_json all_objects
     end
 
     # Delete route

@@ -42,8 +42,8 @@ class SimpleObjectTest < MiniTest::Test
         data = { "hello" => "world" }
         assert_equal JSON.pretty_generate(JSON.load(data.to_json)), @app.helpers.send_json(data)
 
-        error = @app.helpers.send_json("")
-        assert_equal error, SimpleObjectApi::SERVER_ERROR
+        empty = @app.helpers.send_json("")
+        assert_equal empty, "[]"
     end
 
     # Test the send simple object method

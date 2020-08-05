@@ -6,8 +6,6 @@ module ApplicationHelpers
     JSON_DATA_ERROR = "Bad JSON data."
     MISSING_UID_ERROR = "Could not find requested uid."
     SAVE_ERROR = "Could not save new object."
-    EMPTY_DB_ERROR = "No objects to fetch."
-    SERVER_ERROR = "Server error."
     
     # Parse incoming json data
     def json_params
@@ -22,7 +20,7 @@ module ApplicationHelpers
     def send_json(data)
         if !data.present?
             # Just in case something goes wrong
-            SERVER_ERROR
+            "[]"
         else
             JSON.pretty_generate(JSON.load(data.to_json))
         end

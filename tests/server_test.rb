@@ -103,10 +103,11 @@ describe SimpleObjectApi do
         DatabaseCleaner.start
 
         # First, fetch all when the DB is empty
-        bad_resp = get '/api/objects'
+        empty_resp = get '/api/objects'
+        empty_json_data = parse_json empty_resp.body
 
-        # Run tests on the bad response
-        test_error bad_resp, "GET", '/api/objects', SimpleObjectApi::EMPTY_DB_ERROR
+        # Run tests on the response
+        test_resp empty_resp, empty_json_data
 
         # Then, fill the DB and check again
         50.times { SimpleObject.create().id }
@@ -128,8 +129,21 @@ describe SimpleObjectApi do
             assert_equal good_json_data.length(), object_ids.length()
         end
 
+        # Do the same tests, but with an empty id
+        good_empty_resp = get '/api/objects/'
+        good_empty_json_data = parse_json good_empty_resp.body
+
+        # Run tests on the response
+        test_resp good_empty_resp, good_empty_json_data
+
+        # Check real uids against fetched uids
+        it "must respond with the correct number of uids when get body is empty" do
+            assert_equal good_empty_json_data.length(), object_ids.length()
+        end
+
         it "must respond with the correct uids" do
             object_ids.each_with_index do |uid, index|
+                assert good_empty_json_data[index]["url"].include? uid
                 assert good_json_data[index]["url"].include? uid
             end
         end
