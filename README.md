@@ -5,7 +5,7 @@ A simple api to manipulate JSON objects. Powered by sinatra and rack. Lives on H
 - Create: POST /api/objects
 - Edit: PUT /api/objects/:uid
 - Fetch: GET /api/objects/:uid
-- Fetch all: GET /api/objetcs
+- Fetch all: GET /api/objects
 - Remove: DELETE /api/objects/:uid
 
 To set up locally
