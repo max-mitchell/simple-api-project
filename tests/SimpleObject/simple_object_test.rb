@@ -54,6 +54,7 @@ class SimpleObjectTest < MiniTest::Test
 
         parsed = parse_json data
         assert_equal object.id, parsed["uid"]
-        assert_equal object.data, parsed["json-data"]
+        parsed.delete('uid')
+        assert_equal object.data, parsed
     end
 end

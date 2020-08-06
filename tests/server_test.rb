@@ -22,6 +22,12 @@ def parse_json(data)
     end
 end
 
+# Helper to remove uid from body
+def strip_uid(body)
+    body.delete('uid') if body.key?('uid')
+    body
+end
+
 # Helper for basic response assertions
 def test_resp(resp, data)
     it "must respond with 200" do
@@ -68,6 +74,7 @@ describe SimpleObjectApi do
             'lname' => "Smith",
             'dob' => "24 April 2020"
         }
+
         sObj = SimpleObject.create(data: body.to_json)
 
         # Fetch that object
@@ -82,7 +89,7 @@ describe SimpleObjectApi do
         end
 
         it "must respond with matching json data" do
-            assert_equal body.to_json, good_json_data["json-data"]
+            assert_equal body, strip_uid(good_json_data.clone)
         end
 
         # Attempt to fetch an object that does not exist
@@ -166,22 +173,26 @@ describe SimpleObjectApi do
             'lname' => "Smith",
             'dob' => "24 April 2020"
         }
-        first_resp = post '/api/objects', body.to_json
+        # Create a dummy uid
+        fake_uid = "7376716c-c394-498f-80dd-a7cdf1ef1398"
+
+        first_resp = post '/api/objects', body.merge({:uid => fake_uid}).to_json
         first_json_data = parse_json first_resp.body
 
         # Run tests on the response
         test_resp first_resp, first_json_data
 
-        it "must respond with a new uid" do
+        it "must respond with a new uid not equal to any passed uids" do
             assert first_json_data["uid"]
+            assert first_json_data["uid"] != fake_uid
         end
 
         it "must respond with matching json data" do
-            assert_equal body, first_json_data["json-data"]
+            assert_equal body, strip_uid(first_json_data.clone)
         end
 
         # Send the same body again and look for a different uid
-        second_resp = post '/api/objects', body.to_json
+        second_resp = post '/api/objects', body.merge({:uid => fake_uid}).to_json
         second_json_data = parse_json second_resp.body
 
         it "must respond with a different uid for a new object with the same data" do
@@ -218,16 +229,20 @@ describe SimpleObjectApi do
             'lname' => "Smith",
             'dob' => "24 April 2020"
         }
+
         sObj = SimpleObject.create(data: body.to_json)
 
         # Create a body to replace the data with
         replace = {
             "something" => "else"
         }
+        # Create a dummy uid
+        fake_uid = "7376716c-c394-498f-80dd-a7cdf1ef1398"
 
         # Update the object
-        first_resp = put '/api/objects/' + sObj.id, replace.to_json
+        first_resp = put '/api/objects/' + sObj.id, replace.merge({:uid => fake_uid}).to_json
         first_json_data = parse_json first_resp.body
+        puts first_json_data
 
         # Run tests on the response
         test_resp first_resp, first_json_data
@@ -237,11 +252,11 @@ describe SimpleObjectApi do
         end
 
         it "must respond with correct json data" do
-            assert_equal replace, first_json_data["json-data"]
+            assert_equal replace, strip_uid(first_json_data.clone)
         end
 
         # Send the put again and expect the same results
-        second_resp = put '/api/objects/' + sObj.id, replace.to_json
+        second_resp = put '/api/objects/' + sObj.id, replace.merge({:uid => fake_uid}).to_json
         second_json_data = parse_json second_resp.body
 
         # Run tests on the second response
@@ -252,7 +267,7 @@ describe SimpleObjectApi do
         end
 
         it "must respond with correct json data" do
-            assert_equal replace, second_json_data["json-data"]
+            assert_equal replace, strip_uid(second_json_data.clone)
         end
 
         # Send an empty body and look for a valid error message
