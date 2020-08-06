@@ -10,7 +10,10 @@ module ApplicationHelpers
     # Parse incoming json data
     def json_params
         begin
-            JSON.parse(request.body.read)
+            parsed = JSON.parse(request.body.read)
+            # Drop any top level uid key, we don't want to store this
+            parsed.delete('uid') if parsed.key?('uid')
+            return parsed
         rescue
             halt(send_error(request, url, JSON_DATA_ERROR))
         end
@@ -28,10 +31,13 @@ module ApplicationHelpers
 
     # Format SimpleObject, then send
     def send_simple_object(obj)
-        data = {
-            "uid": obj.id,
-            "json-data": obj.data
-        }
+        data = {:uid => obj.id}
+        if obj.data.is_a? String
+            data.merge!(JSON.parse(obj.data))
+        else
+            data.merge!(obj.data)
+        end
+        
         send_json data
     end
 
