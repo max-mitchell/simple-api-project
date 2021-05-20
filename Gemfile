@@ -7,7 +7,7 @@ gem 'sinatra', '~>2.0.8'
 gem 'activerecord', '~>6.0.3'
 gem 'standalone_migrations', '~>6.0.0'
 gem 'pg', '~>1.2.3'
-gem 'puma', '~>4.3.5'
+gem 'puma', '~>4.3.8'
 
 # For testing
 group :test do
