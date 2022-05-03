@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 
 ruby '2.7.0'
 
-gem 'sinatra', '~>2.0.8'
+gem 'sinatra', '~>2.2.0'
 gem 'activerecord', '~>6.0.3'
 gem 'standalone_migrations', '~>6.0.0'
 gem 'pg', '~>1.2.3'
